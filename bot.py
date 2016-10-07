@@ -1,7 +1,8 @@
 
 from telegram.ext import Updater, CommandHandler, Job
-import logging
+import logging, datetime
 import datetime_counter
+
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -19,16 +20,35 @@ def start(bot, update):
 
 def alarm(bot, job):
     """Function to send the alarm message"""
-    bot.sendMessage(job.context, text='Beep!')
+    bot.sendMessage(job.context, text=answer)
 
 
 def set(bot, update, args, job_queue):
     """Adds a job to the queue"""
+
+    user_text = update.message.text
+    user_text = user_text.replace("/set ", "")
+    if ':' in user_text:
+        user_text_list = user_text.split(':')
+        ndt = datetime.datetime.strptime(user_text_list[0], '%Y/%m/%d/%H/%M')
+        dt_now = datetime.datetime.now()
+        new_date = ndt - dt_now
+        result = new_date.total_seconds()
+        global answer
+        answer = user_text_list[1]
+    else:    
+        ndt = datetime.datetime.strptime(user_text, '%Y/%m/%d/%H/%M')
+        dt_now = datetime.datetime.now()
+        new_date = ndt - dt_now
+        result = new_date.total_seconds()
+        global answer
+        answer = 'Tutturu! Do your stuff!'
+    
     chat_id = update.message.chat_id
-    seconds = str(datetime_counter.cdate_count(update.message.text))
+    seconds = result
 
     try:
-        due = int(seconds)
+        due = int(result)
         if due < 0:
             update.message.reply_text('Sorry we can not go back to future!')
             return
@@ -88,4 +108,4 @@ def main():
 
 if __name__ == "__main__":
 
-    main() 
+    main()

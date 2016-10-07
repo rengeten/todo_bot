@@ -15,7 +15,7 @@ timers = dict()
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
 def start(bot, update):
-    update.message.reply_text('Hi! Use /set YYYY/MM/DD/HH/MM to set a timer')
+    update.message.reply_text('Hi! Use /set YYYY/MM/DD/HH/MM to set a timer, add your message after ":", if you need.')
 
 
 def alarm(bot, job):
